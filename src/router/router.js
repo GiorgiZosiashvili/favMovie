@@ -6,6 +6,7 @@ import TVShowPage from "../pages/tvShowPage";
 import AnimationsPage from "../pages/animationsPage";
 import MovieDetailsPage from "../pages/movieDetailsPage";
 import FavoriteMoviesPage from "../pages/favoritesPage";
+import TVShowDetailsPage from "../pages/TVShowDetailsPage";
 
 export default function Router() {
   return (
@@ -16,6 +17,7 @@ export default function Router() {
         <Route path="TV Shows" element={<TVShowPage />} />
         <Route path="Animations" element={<AnimationsPage />} />
         <Route path="MovieDetails/:id" element={<MovieDetailsPage />} />
+        <Route path="TVshowDetails/:id" element={<TVShowDetailsPage />} />
         <Route path="FavoriteMovies" element={<FavoriteMoviesPage />} />
       </Routes>
     </BrowserRouter>

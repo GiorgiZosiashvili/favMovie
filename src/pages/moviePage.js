@@ -7,22 +7,28 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { FavMovie, state } from "../valtio/valtio";
 import { useSnapshot } from "valtio";
-import ContentCard from "../components/homeComp/contentCard";
+
 import Header from "../common/header";
+import Card from "../common/Card";
 
 const MoviePage = () => {
   useSnapshot(state, FavMovie);
   const [movies, setMovies] = useState([]);
-  const [page, setPage] = useState(1);
-  const [genre, setGenre] = useState();
+  const [page, setPage] = useState(() => {
+    const savedPage = parseInt(localStorage.getItem("page"));
+    return isNaN(savedPage) ? 1 : savedPage;
+  });
+  const [genre, setGenre] = useState("");
   const [loading, setLoading] = useState(false);
   const [favoriteMovie, setFavoriteMovie] = useState([]);
+
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       state.currentUser = JSON.parse(savedUser);
     }
   }, []);
+
   FavMovie.favMovie = favoriteMovie;
 
   const uid = state?.currentUser?.uid;
@@ -48,6 +54,7 @@ const MoviePage = () => {
       FavMovie.favMovie = JSON.parse(storedFavoriteMovie);
     }
   }, [uid]);
+
   useEffect(() => {
     const options = {
       method: "GET",
@@ -60,7 +67,7 @@ const MoviePage = () => {
     setLoading(true);
     async function fetchData() {
       const request = await instance.get(
-        `/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc&with_genres=${genre}`,
+        `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=true&language=en-US&page=${page}&sort_by=popularity.desc&with_genres=${genre}`,
         options
       );
       setMovies(request.data.results);
@@ -73,7 +80,9 @@ const MoviePage = () => {
 
   const handleChange = (event, value) => {
     setPage(value);
+    localStorage.setItem("page", value);
   };
+
   if (loading) {
     return <LoadingAnimation />;
   }
@@ -81,21 +90,33 @@ const MoviePage = () => {
   return (
     <Movie>
       <Header page="/Movies" />
-      <Body>
-        {movies.map((movie, i) => {
-          const isFavorite = favoriteMovie.some((fav) => fav.id === movie.id);
-          return (
-            <ContentCard
-              moviePage={true}
-              key={movie?.id}
-              movie={movie}
-              isFavorite={isFavorite}
-              addToFavorites={addToFavorites}
-              removeFromFavorites={removeFromFavorites}
-            />
-          );
-        })}
-      </Body>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <Body>
+          {movies?.map((movie, i) => {
+            const isFavorite = favoriteMovie.some(
+              (fav) => fav?.id === movie?.id
+            );
+            return (
+              <Card
+                moviePage={true}
+                key={movie?.id}
+                data={movie}
+                isFavorite={isFavorite}
+                addToFavorites={addToFavorites}
+                removeFromFavorites={removeFromFavorites}
+                page="MovieDetails"
+              />
+            );
+          })}
+        </Body>
+      </div>
       <Stack spacing={1}>
         <Pagination
           color="secondary"
@@ -121,13 +142,16 @@ const Movie = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 34px 0px 20px 34px;
+  padding: 20px 40px;
 `;
 const Body = styled.div`
-  margin-top: 30px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  display: flex;
+  width: 80%;
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
+  margin: 30px 10%;
+  gap: 30px;
 `;
 
 export default MoviePage;

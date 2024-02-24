@@ -26,6 +26,7 @@ const Genres = ({ setGenreId }) => {
     localStorage.setItem("selectedGenre", selectedGenre);
     setGenreId(selectedGenre);
   }, [selectedGenre, setGenreId]);
+
   return (
     <Body>
       <Title>Genres</Title>
@@ -37,6 +38,7 @@ const Genres = ({ setGenreId }) => {
               <Genre
                 onClick={() => {
                   setSelectedGenre(item.id);
+                  item.id === selectedGenre && setSelectedGenre(null);
                 }}
                 key={i}
                 style={{ backgroundColor: isSelected && "#442899" }}
@@ -64,11 +66,14 @@ const Body = styled.div`
   }
 `;
 
-const MovieGenres = styled.div`
+const MovieGenres = styled.ul`
   flex: 1;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   min-width: 200px;
+  max-width: 300px;
+  gap: 10px;
   flex-wrap: wrap;
   ::-webkit-scrollbar {
     width: 0;
@@ -77,19 +82,20 @@ const MovieGenres = styled.div`
 `;
 
 const Genre = styled.li`
+  display: flex;
+  width: 140px;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
   border: solid 1px #fff;
-  padding: 10px 0px;
   border-radius: 50px;
   color: white;
   cursor: pointer;
-  width: 140px;
-  display: flex;
-  justify-content: center;
-  align-self: center;
-  margin: 5px;
 `;
 
 const Title = styled.h1`
+  font-size: 24px;
+  font-weight: 600;
   color: #fff;
   margin-bottom: 20px;
 `;

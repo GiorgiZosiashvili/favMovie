@@ -6,7 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { state } from "../valtio/valtio";
 
-const SignInModal = ({ setShowModal, setSignUp }) => {
+const SignInModal = ({ setSignUpModal, setSignInModal }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -22,7 +22,7 @@ const SignInModal = ({ setShowModal, setSignUp }) => {
       .then((userCredential) => {
         const user = userCredential.user;
         localStorage.setItem("user", JSON.stringify(user));
-        setShowModal(false);
+        setSignInModal(false);
         state.currentUser = user;
       })
       .catch((error) => {
@@ -38,7 +38,7 @@ const SignInModal = ({ setShowModal, setSignUp }) => {
           <Title>Authorization</Title>
           <CloseButton
             onClick={() => {
-              setShowModal(false);
+              setSignInModal(false);
             }}
           >
             <CloseIcon sx={{ fontSize: 24, color: "white" }} />
@@ -78,7 +78,8 @@ const SignInModal = ({ setShowModal, setSignUp }) => {
           <NoAccount>Don’t have an account?</NoAccount>
           <SignUp
             onClick={() => {
-              setSignUp(true);
+              setSignUpModal(true);
+              setSignInModal(false);
             }}
           >
             Sign Up
@@ -90,7 +91,7 @@ const SignInModal = ({ setShowModal, setSignUp }) => {
 };
 const Body = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -98,7 +99,7 @@ const Body = styled.div`
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 100;
+  z-index: 200;
 `;
 const Content = styled.div`
   padding: 0px 25px;
@@ -200,6 +201,7 @@ const NoAccount = styled.h6`
   text-align: right;
 `;
 const SignUp = styled.h6`
+  margin-left: 5px;
   color: #cbbdf6;
   text-align: right;
   cursor: pointer;

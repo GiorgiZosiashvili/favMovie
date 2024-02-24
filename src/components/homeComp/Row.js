@@ -49,7 +49,6 @@ const MoviesContainer = styled.div`
   display: flex;
   overflow-x: scroll;
   overflow-y: hidden;
-  padding: 35px 0px 2px 20px;
 `;
 
 const TitleContainer = styled.div`
@@ -63,6 +62,7 @@ const Title = styled.h1`
   border: solid 1px #ffffff;
   border-radius: 40px;
   padding: 12px;
+  margin: 0px 0px 20px;
 `;
 
 export default Row;

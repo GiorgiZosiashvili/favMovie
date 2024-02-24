@@ -1,28 +1,35 @@
 import React, { useEffect, useState } from "react";
-
 import { styled } from "styled-components";
 import { useSnapshot } from "valtio";
 import { FavTVShow, state } from "../valtio/valtio";
 import LoadingAnimation from "../common/loading";
 import instance from "../axios";
-import ContentCard from "../components/homeComp/contentCard";
 import { Pagination, Stack } from "@mui/material";
 import Header from "../common/header";
+import Card from "../common/Card";
 
 const TVShowPage = () => {
   useSnapshot(state, FavTVShow);
   const [tvShow, setTvShows] = useState([]);
-  const [page, setPage] = useState(1);
-  const [genre, setGenre] = useState();
+  const [page, setPage] = useState(() => {
+    const savedPage = parseInt(localStorage.getItem("tvShowPage"));
+    return isNaN(savedPage) ? 1 : savedPage;
+  });
+  const [genre, setGenre] = useState("");
   const [loading, setLoading] = useState(false);
   const [favoriteTvShow, setFavoriteTvShow] = useState([]);
-  console.log(favoriteTvShow);
+
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       state.currentUser = JSON.parse(savedUser);
     }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("tvShowPage", page);
+  }, [page]);
+
   const uid = state?.currentUser?.uid;
   const addToFavorites = (tvShow) => {
     localStorage.setItem(
@@ -39,6 +46,7 @@ const TVShowPage = () => {
       JSON.stringify(favoriteTvShow.filter((fav) => fav.id !== tvShow.id))
     );
   };
+
   useEffect(() => {
     const storedFavoriteTvShow = localStorage.getItem(`favoriteTvShow+${uid}`);
     if (storedFavoriteTvShow) {
@@ -46,6 +54,7 @@ const TVShowPage = () => {
       FavTVShow.favTvShow = JSON.parse(storedFavoriteTvShow);
     }
   }, [uid]);
+
   useEffect(() => {
     const options = {
       method: "GET",
@@ -58,7 +67,7 @@ const TVShowPage = () => {
     setLoading(true);
     async function fetchData() {
       const request = await instance.get(
-        `/discover/tv?include_adult=true&include_null_first_air_dates=false&language=en-US&page=${page}&sort_by=popularity.desc&with_genres=${genre}`,
+        `https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=${page}`,
         options
       );
       setTvShows(request.data.results);
@@ -72,23 +81,26 @@ const TVShowPage = () => {
   const handleChange = (event, value) => {
     setPage(value);
   };
+
   if (loading) {
     return <LoadingAnimation />;
   }
+
   return (
-    <TVSHOW>
+    <TVShow>
       <Header page="/TV Shows" />
       <Body>
         {tvShow.map((tvShow) => {
           const isFavorite = favoriteTvShow.some((fav) => fav.id === tvShow.id);
           return (
-            <ContentCard
+            <Card
               addToFavorites={addToFavorites}
               isFavorite={isFavorite}
               removeFromFavorites={removeFromFavorites}
               TVShowPage={true}
-              movie={tvShow}
+              data={tvShow}
               key={tvShow.id}
+              page={"TVshowDetails"}
             />
           );
         })}
@@ -109,23 +121,26 @@ const TVShowPage = () => {
           }}
         />
       </Stack>
-    </TVSHOW>
+    </TVShow>
   );
 };
 
-const TVSHOW = styled.div`
+const TVShow = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 34px 0px 20px 34px;
+  padding: 20px 40px;
 `;
 const Body = styled.div`
-  margin-top: 30px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  display: flex;
+  width: 80%;
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
+  margin: 30px 10%;
+  gap: 30px;
 `;
 
 export default TVShowPage;

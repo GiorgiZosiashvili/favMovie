@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Row from "../components/homeComp/Row";
 import request from "../Request";
 import { styled } from "styled-components";
@@ -12,28 +12,32 @@ import Header from "../common/header";
 export const API_KEY = `72e82c9ed2b8249e58e63f113a22d374`;
 const HomePage = () => {
   const [genreId, setGenreId] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [signUp, setSignUp] = useState(false);
+  const [signUpModal, setSignUpModal] = useState(false);
+  const [signInModal, setSignInModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   useSnapshot(state);
-  //   useEffect(() => {
-  //     currentUser && setShowModal(false);
-  //   }, [currentUser]);
+
   return (
-    <Home modal={toString(showModal)}>
+    <Home>
       <Header
         setCurrentUser={setCurrentUser}
-        setShowModal={setShowModal}
+        setSignInModal={setSignInModal}
         page="/"
       />
       <Container>
         <Genres setGenreId={setGenreId} />
         <MovieOfTheDay />
       </Container>
-      {showModal && !signUp ? (
-        <SignInModal setSignUp={setSignUp} setShowModal={setShowModal} />
-      ) : showModal && signUp ? (
-        <SignUpModal setShowModal={setShowModal} setSignUp={setSignUp} />
+      {signInModal ? (
+        <SignInModal
+          setSignUpModal={setSignUpModal}
+          setSignInModal={setSignInModal}
+        />
+      ) : signUpModal ? (
+        <SignUpModal
+          setSignUpModal={setSignUpModal}
+          setSignInModal={setSignInModal}
+        />
       ) : null}
       <Body>
         {genreId ? (
@@ -50,7 +54,7 @@ const HomePage = () => {
 
 const Home = styled.div`
   height: 100%;
-  padding: 34px 0px 20px 34px;
+  padding: 20px 40px;
   overflow: ${(props) => (props.modal === "true" ? "hidden" : "scroll")};
 `;
 const Body = styled.div`

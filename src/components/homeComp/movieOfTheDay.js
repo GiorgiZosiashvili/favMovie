@@ -70,6 +70,7 @@ const MovieOfTheDay = () => {
             }
             src={`${BASE_URL}${movie.poster_path}`}
           />
+          <Shade />
         </>
       )}
     </Body>
@@ -81,6 +82,14 @@ const Body = styled.div`
   flex-direction: row;
   flex: 1;
   position: relative;
+`;
+const Shade = styled.div`
+  background-color: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  position: absolute;
+  border-radius: 40px;
 `;
 
 const InfoContainer = styled.div`

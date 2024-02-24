@@ -7,19 +7,21 @@ import YouTube from "react-youtube";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import StarIcon from "@mui/icons-material/Star";
-import Row from "../components/homeComp/Row";
-import { API_KEY } from "./homePage";
 import Header from "../common/header";
 import VideoPlayer from "../common/VideoPlayer";
+import SeasonsAndEpisodes from "../components/TVShowComp/Seasons&Episodes";
+import SimilarTVShows from "../components/Similar";
 import Similar from "../components/Similar";
 
-const MovieDetailsPage = () => {
+const TVShowDetailsPage = () => {
   const { id } = useParams();
-  const [movie, setMovie] = useState([]);
+  const [tvShow, setTvShow] = useState([]);
   const [loading, setLoading] = useState(true);
   const [trailerId, setTrailerId] = useState([]);
-  const hours = Math.floor(movie?.runtime / 60);
-  const minutes = movie?.runtime % 60;
+  const [seasonNum, setSeasonNum] = useState("1");
+  const [episodeNum, setEpisodeNum] = useState("1");
+  const hours = Math.floor(tvShow.runtime / 60);
+  const minutes = tvShow.runtime % 60;
   const BASE_URL = "https://image.tmdb.org/t/p/original/";
   const opts = {
     height: "700px",
@@ -28,6 +30,7 @@ const MovieDetailsPage = () => {
       autoPlay: 1,
     },
   };
+
   useEffect(() => {
     const options = {
       method: "GET",
@@ -38,10 +41,10 @@ const MovieDetailsPage = () => {
       },
     };
     setLoading(true);
-    fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, options)
+    fetch(`https://api.themoviedb.org/3/tv/${id}?language=en-US`, options)
       .then((response) => response.json())
       .then((response) => {
-        setMovie(response);
+        setTvShow(response);
         setLoading(false);
       })
       .catch((err) => console.error("error", err));
@@ -53,8 +56,8 @@ const MovieDetailsPage = () => {
   const filteredId = trailerId?.filter((id) => id.type === "Trailer");
 
   return (
-    <MovieDetails>
-      <Header page="/Movies" />
+    <TVShowDetails>
+      <Header page="/TV Shows" />
       {/* <Video>
         <YouTube
           videoId={filteredId[0]?.key || filteredId[1]?.key}
@@ -62,33 +65,33 @@ const MovieDetailsPage = () => {
         />
       </Video> */}
       <Container>
-        <VideoPlayer movieId={movie?.imdb_id || movie?.id} />
-        <div
-          style={{ display: "flex", flex: 0.9, height: "100%", maxHeight: 400 }}
-        >
-          <Image src={`${BASE_URL}${movie?.poster_path}`} />
+        <Div style={{ width: "100%" }}>
+          <VideoPlayer
+            page="/TV Shows"
+            tvShowId={tvShow.id}
+            seasonNum={seasonNum}
+            episodeNum={episodeNum}
+          />
+          <SeasonsAndEpisodes
+            data={tvShow}
+            setSeasonNum={setSeasonNum}
+            setEpisodeNum={setEpisodeNum}
+            episodeNum={episodeNum}
+          />
+        </Div>
+        <Div>
+          <Image src={`${BASE_URL}${tvShow.poster_path}`} />
           <TextContainer>
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                flexDirection: "row",
-              }}
-            >
-              <Title>{movie?.title}</Title>
-              <DetailsText>{movie?.tagline}</DetailsText>
-            </div>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <DetailsText>Language: </DetailsText>
-              <DetailsText
-                style={{ textTransform: "uppercase", marginLeft: 5 }}
-              >
-                {movie?.original_language}
-              </DetailsText>
-            </div>
+            <Title>{tvShow.name}</Title>
+            <DetailsText>
+              Language:
+              <span style={{ textTransform: "uppercase", marginLeft: 5 }}>
+                {tvShow.original_language}
+              </span>
+            </DetailsText>
             <DetailsContainer>
               <GenreContainer>
-                {movie?.genres?.map((genre) => {
+                {tvShow.genres.map((genre) => {
                   return <Genre key={genre.name}>{genre.name}</Genre>;
                 })}
               </GenreContainer>
@@ -96,44 +99,37 @@ const MovieDetailsPage = () => {
                 <CalendarMonthIcon
                   style={{ color: "white", width: "17", height: "17" }}
                 />
-                <DetailsText>{movie?.release_date}</DetailsText>
-              </Details>
-              <Details>
-                <AccessTimeIcon
-                  style={{ color: "white", width: "17", height: "17" }}
-                />
-                <DetailsText>{hours + ":" + minutes}</DetailsText>
+                <DetailsText>{tvShow.last_air_date}</DetailsText>
               </Details>
               <Details>
                 <StarIcon
                   style={{ color: "white", width: "17", height: "17" }}
                 />
-                <DetailsText>{movie?.vote_average?.toFixed(1)}</DetailsText>
+                <DetailsText>{tvShow.vote_average.toFixed(1)}</DetailsText>
               </Details>
             </DetailsContainer>
-            <Description>{movie?.overview}</Description>
+            <Description>{tvShow.overview}</Description>
           </TextContainer>
-        </div>
+        </Div>
       </Container>
       <Similar
-        page="MovieDetails"
-        title="Similar Movies"
-        type="movie"
-        id={movie?.id}
+        page={"TVshowDetails"}
+        title="Similar TV Shows"
+        type={"tv"}
+        id={tvShow.id}
       />
-    </MovieDetails>
+    </TVShowDetails>
   );
 };
 
-const MovieDetails = styled.div`
+const TVShowDetails = styled.div`
   display: flex;
+  width: 100%;
   position: relative;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
-  flex-direction: column;
-  margin-left: auto;
-  margin-right: auto;
   padding: 20px;
-  overflow-x: hidden;
 `;
 const Video = styled.div`
   width: 100%;
@@ -147,20 +143,22 @@ const Container = styled.div`
   align-items: center;
   flex-wrap: wrap;
   width: 100%;
-  height: 100%;
-  margin-bottom: 30px;
-  gap: 10px;
+`;
+const Div = styled.div`
+  display: flex;
+  margin: 20px 0px;
 `;
 const Image = styled.img`
-  object-fit: fill;
-  flex: 0.5;
-  max-width: 350px;
+  object-fit: cover;
+  width: 100%;
+  max-width: 335px;
 `;
 const TextContainer = styled.div`
   display: flex;
-  height: 100%;
+  max-width: 350px;
   flex-direction: column;
   margin-left: 10px;
+  gap: 20px;
 `;
 const Title = styled.h2`
   color: white;
@@ -219,4 +217,4 @@ const Description = styled.h4`
   font-size: 16px;
   padding: 5px;
 `;
-export default MovieDetailsPage;
+export default TVShowDetailsPage;

@@ -6,13 +6,13 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-const SignUpModal = ({ setShowModal, setSignUp }) => {
+const SignUpModal = ({ setSignUpModal, setSignInModal }) => {
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const auth = getAuth();
-
+  console.log(auth);
   const signUp = (e) => {
     e.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
@@ -23,8 +23,8 @@ const SignUpModal = ({ setShowModal, setSignUp }) => {
         })
           .then(() => {
             console.log("User display name updated successfully.");
-            setShowModal(false);
-            setSignUp(false);
+            setSignUpModal(false);
+            setSignInModal(false);
           })
           .catch((error) => {
             console.log("Error updating user display name:", error);
@@ -45,7 +45,8 @@ const SignUpModal = ({ setShowModal, setSignUp }) => {
           <Title>Registration</Title>
           <CloseButton
             onClick={() => {
-              setShowModal(false);
+              setSignUpModal(false);
+              setSignInModal(true);
             }}
           >
             <CloseIcon sx={{ fontSize: 24, color: "white" }} />
@@ -93,21 +94,21 @@ const Body = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.8);
   z-index: 100;
 `;
 const Content = styled.div`
-  padding: 46px 25px 114px;
-  background-color: rgba(39, 27, 74, 1);
-  width: 22%;
-  min-width: 350px;
-  margin-top: 62px;
   display: flex;
   flex-direction: column;
   border: none;
   border-radius: 10px;
+  min-width: 350px;
+  padding: 20px 40px;
+  max-width: 25%;
+  background-color: rgba(39, 27, 74, 1);
 `;
 const HeaderContainer = styled.div`
   display: flex;
