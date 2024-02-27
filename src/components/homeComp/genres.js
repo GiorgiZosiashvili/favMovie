@@ -55,7 +55,7 @@ const Genres = ({ setGenreId }) => {
 
 const Body = styled.div`
   display: flex;
-  width: fit-content;
+  width: 30%;
   align-items: flex-start;
   flex-direction: column;
   overflow-y: scroll;
@@ -67,23 +67,19 @@ const Body = styled.div`
 `;
 
 const MovieGenres = styled.ul`
-  flex: 1;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  min-width: 200px;
-  max-width: 300px;
-  gap: 10px;
+  gap: 15px;
   flex-wrap: wrap;
   ::-webkit-scrollbar {
     width: 0;
   }
-  margin-right: 90px;
 `;
 
 const Genre = styled.li`
   display: flex;
-  width: 140px;
+  width: 135px;
   align-items: center;
   justify-content: center;
   height: 40px;

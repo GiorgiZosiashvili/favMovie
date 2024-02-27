@@ -40,6 +40,8 @@ const Row = ({ title, fetchUrl }) => {
 };
 
 const Body = styled.div`
+  display: flex;
+  flex-direction: column;
   ::-webkit-scrollbar {
     width: 0;
   }
@@ -47,22 +49,26 @@ const Body = styled.div`
 
 const MoviesContainer = styled.div`
   display: flex;
+  gap: 30px;
   overflow-x: scroll;
   overflow-y: hidden;
+  padding: 40px 20px 0px;
 `;
 
 const TitleContainer = styled.div`
-  display: inline-block;
+  display: flex;
 `;
 
 const Title = styled.h1`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 700;
   font-size: 20px;
   color: #ffffff;
   border: solid 1px #ffffff;
   border-radius: 40px;
-  padding: 12px;
-  margin: 0px 0px 20px;
+  padding: 10px;
 `;
 
 export default Row;

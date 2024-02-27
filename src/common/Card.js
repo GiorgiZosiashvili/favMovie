@@ -47,9 +47,11 @@ const Card = ({
             data?.original_name
           }
           src={
-            data?.backdrop_path
+            data?.poster_path
               ? `${BASE_URL}${data?.poster_path}`
-              : "https://static.thenounproject.com/png/4974686-200.png"
+              : `${BASE_URL}${data?.backdrop_path}`
+              ? "https://static.thenounproject.com/png/4974686-200.png"
+              : null
           }
         />
         <MovieName>

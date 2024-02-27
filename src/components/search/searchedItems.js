@@ -35,18 +35,27 @@ const SearchedItems = ({ data, loading }) => {
                 item?.original_name
               }
               src={
-                item?.backdrop_path
+                item?.poster_path
                   ? `${BASE_URL}${item?.poster_path}`
-                  : "https://static.thenounproject.com/png/4974686-200.png"
+                  : `${BASE_URL}${item.backdrop_path}`
+                  ? "https://static.thenounproject.com/png/4974686-200.png"
+                  : null
               }
             />
-            <Title>
-              {item?.title ||
-                item?.original_title ||
-                item?.name ||
-                item?.original_name}
-            </Title>
-            <Description></Description>
+            <TextContainer>
+              <Title>
+                {item?.title ||
+                  item?.original_title ||
+                  item?.name ||
+                  item?.original_name}
+              </Title>
+              <Description>
+                <Text>
+                  {item.media_type}•{item.original_language}•
+                  {item.vote_average?.toFixed(1)}{" "}
+                </Text>
+              </Description>
+            </TextContainer>
           </Container>
         );
       })}
@@ -66,6 +75,7 @@ const Body = styled.div`
   border: none;
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
+  padding: 10px 0px;
   gap: 10px;
 `;
 
@@ -75,18 +85,29 @@ const Container = styled(Link)`
   justify-content: left;
   margin: 0px 10px;
   gap: 5px;
+  max-height: 150px;
 `;
-
+const TextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
 const MovieImage = styled(LazyLoadImage)`
   transition: border-color 450ms;
   border-radius: 10px;
   object-fit: fill;
   background-color: rgba(0, 0, 0, 0.6);
 `;
-const Description = styled.div``;
+const Description = styled.div`
+  width: 100%;
+`;
 
 const Title = styled.h4`
   color: white;
+`;
+const Text = styled.h3`
+  color: white;
+  text-transform: capitalize;
 `;
 
 export default SearchedItems;

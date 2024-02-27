@@ -13,7 +13,7 @@ const VideoPlayer = ({ movieId, tvShowId, page, episodeNum, seasonNum }) => {
     <VideoContainer>
       <StyledVideo
         width={"100%"}
-        height={"300px"}
+        height={"500px"}
         frameBorder="0"
         allowFullScreen
         src={videoUrl}

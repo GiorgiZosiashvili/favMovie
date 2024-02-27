@@ -146,11 +146,11 @@ const Movie = styled.div`
 `;
 const Body = styled.div`
   display: flex;
-  width: 80%;
+  width: 90%;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin: 30px 10%;
+  margin: 40px 5% 30px;
   gap: 30px;
 `;
 

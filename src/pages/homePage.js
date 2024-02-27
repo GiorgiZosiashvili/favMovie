@@ -9,6 +9,7 @@ import { state } from "../valtio/valtio";
 import SignUpModal from "../auth/signUpModal";
 import { useSnapshot } from "valtio";
 import Header from "../common/header";
+import Popular from "../components/Popular";
 export const API_KEY = `72e82c9ed2b8249e58e63f113a22d374`;
 const HomePage = () => {
   const [genreId, setGenreId] = useState("");
@@ -26,7 +27,8 @@ const HomePage = () => {
       />
       <Container>
         <Genres setGenreId={setGenreId} />
-        <MovieOfTheDay />
+        {/* <MovieOfTheDay /> */}
+        <Popular />
       </Container>
       {signInModal ? (
         <SignInModal
@@ -54,7 +56,7 @@ const HomePage = () => {
 
 const Home = styled.div`
   height: 100%;
-  padding: 20px 40px;
+  padding: 20px 40px 0px;
   overflow: ${(props) => (props.modal === "true" ? "hidden" : "scroll")};
 `;
 const Body = styled.div`
@@ -65,7 +67,6 @@ const Body = styled.div`
 const Container = styled.div`
   display: flex;
   width: 100%;
-  height: 70%;
   margin: 28px 0px;
 `;
 

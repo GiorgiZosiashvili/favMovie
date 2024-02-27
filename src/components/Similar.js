@@ -42,7 +42,7 @@ const Similar = ({ type, id, title, page }) => {
       <Container>
         {similar.results.map((item) => {
           return (
-            <Content to={`/${page}/${item?.id}`}>
+            <Content key={item.id} to={`/${page}/${item?.id}`}>
               <MovieImage
                 effect="blur"
                 width={196}
@@ -53,7 +53,13 @@ const Similar = ({ type, id, title, page }) => {
                   item?.name ||
                   item?.original_name
                 }
-                src={`${BASE_URL}${item?.poster_path}`}
+                src={
+                  item?.poster_path
+                    ? `${BASE_URL}${item?.poster_path}`
+                    : `${BASE_URL}${item?.backdrop_path}`
+                    ? "https://static.thenounproject.com/png/4974686-200.png"
+                    : null
+                }
               />
               <Name>
                 {truncate(

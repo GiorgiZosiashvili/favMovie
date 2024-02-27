@@ -9,17 +9,17 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import StarIcon from "@mui/icons-material/Star";
 import Header from "../common/header";
 import VideoPlayer from "../common/VideoPlayer";
-import SeasonsAndEpisodes from "../components/TVShowComp/Seasons&Episodes";
-import SimilarTVShows from "../components/Similar";
 import Similar from "../components/Similar";
+import Seasons from "../components/TVShowComp/Seasons";
 
 const TVShowDetailsPage = () => {
   const { id } = useParams();
   const [tvShow, setTvShow] = useState([]);
   const [loading, setLoading] = useState(true);
   const [trailerId, setTrailerId] = useState([]);
-  const [seasonNum, setSeasonNum] = useState("1");
-  const [episodeNum, setEpisodeNum] = useState("1");
+  const [seasonNum, setSeasonNum] = useState(1);
+  const [episodeNum, setEpisodeNum] = useState(1);
+  const [play, setPlay] = useState(false);
   const hours = Math.floor(tvShow.runtime / 60);
   const minutes = tvShow.runtime % 60;
   const BASE_URL = "https://image.tmdb.org/t/p/original/";
@@ -65,22 +65,41 @@ const TVShowDetailsPage = () => {
         />
       </Video> */}
       <Container>
-        <Div style={{ width: "100%" }}>
+        {play ? (
           <VideoPlayer
             page="/TV Shows"
             tvShowId={tvShow.id}
             seasonNum={seasonNum}
             episodeNum={episodeNum}
           />
-          <SeasonsAndEpisodes
-            data={tvShow}
-            setSeasonNum={setSeasonNum}
-            setEpisodeNum={setEpisodeNum}
-            episodeNum={episodeNum}
-          />
-        </Div>
+        ) : (
+          <PlayContainer>
+            <PlayButton
+              onClick={() => {
+                setPlay(true);
+              }}
+            />
+            <Poster
+              src={
+                tvShow?.poster_path
+                  ? `${BASE_URL}${tvShow?.backdrop_path}`
+                  : `${BASE_URL}${tvShow?.poster_path}`
+                  ? "https://static.thenounproject.com/png/4974686-200.png"
+                  : null
+              }
+            />
+          </PlayContainer>
+        )}
         <Div>
-          <Image src={`${BASE_URL}${tvShow.poster_path}`} />
+          <Image
+            src={
+              tvShow?.poster_path
+                ? `${BASE_URL}${tvShow?.poster_path}`
+                : `${BASE_URL}${tvShow?.backdrop_path}`
+                ? "https://static.thenounproject.com/png/4974686-200.png"
+                : null
+            }
+          />
           <TextContainer>
             <Title>{tvShow.name}</Title>
             <DetailsText>
@@ -110,6 +129,12 @@ const TVShowDetailsPage = () => {
             </DetailsContainer>
             <Description>{tvShow.overview}</Description>
           </TextContainer>
+          <Seasons
+            data={tvShow}
+            setSeasonNum={setSeasonNum}
+            setEpisodeNum={setEpisodeNum}
+            episodeNum={episodeNum}
+          />
         </Div>
       </Container>
       <Similar
@@ -129,7 +154,7 @@ const TVShowDetails = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 20px;
+  padding: 20px 20px 0px;
 `;
 const Video = styled.div`
   width: 100%;
@@ -137,6 +162,26 @@ const Video = styled.div`
   margin-top: 74px;
   margin-bottom: 64px;
   object-fit: contain;
+`;
+const PlayContainer = styled.div`
+  display: flex;
+  position: relative;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+`;
+const Poster = styled.img`
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+`;
+const PlayButton = styled.div`
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  z-index: 10;
+  border-radius: 50px;
 `;
 const Container = styled.div`
   display: flex;
@@ -146,6 +191,7 @@ const Container = styled.div`
 `;
 const Div = styled.div`
   display: flex;
+  width: 100%;
   margin: 20px 0px;
 `;
 const Image = styled.img`
@@ -178,7 +224,7 @@ const GenreContainer = styled.div`
   flex-wrap: wrap;
   flex-direction: row;
   width: 100%;
-  gap: 5px;
+  gap: 10px;
 `;
 const Genre = styled.h2`
   display: flex;
@@ -192,6 +238,7 @@ const Genre = styled.h2`
   border-radius: 10px;
   min-width: 80px;
   height: 30px;
+  padding: 10px;
 `;
 const Details = styled.div`
   display: flex;

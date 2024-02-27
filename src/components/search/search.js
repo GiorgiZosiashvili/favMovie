@@ -45,7 +45,6 @@ const Search = () => {
         setLoading(false);
       });
   }, [keyword]);
-
   return (
     <Body>
       <Form
@@ -93,7 +92,7 @@ const Body = styled.div`
   flex-direction: column;
   position: relative;
   height: 100%;
-  width: 45%;
+  width: 38%;
   min-width: 250px;
 `;
 

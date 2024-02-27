@@ -7,8 +7,6 @@ import YouTube from "react-youtube";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import StarIcon from "@mui/icons-material/Star";
-import Row from "../components/homeComp/Row";
-import { API_KEY } from "./homePage";
 import Header from "../common/header";
 import VideoPlayer from "../common/VideoPlayer";
 import Similar from "../components/Similar";
@@ -19,7 +17,7 @@ const MovieDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [trailerId, setTrailerId] = useState([]);
   const hours = Math.floor(movie?.runtime / 60);
-  const minutes = movie?.runtime % 60;
+  const minutes = String(movie?.runtime % 60).padStart(2, "0");
   const BASE_URL = "https://image.tmdb.org/t/p/original/";
   const opts = {
     height: "700px",
@@ -62,7 +60,7 @@ const MovieDetailsPage = () => {
         />
       </Video> */}
       <Container>
-        <VideoPlayer movieId={movie?.imdb_id || movie?.id} />
+        <VideoPlayer movieId={movie?.id || movie?.imdb_id} />
         <div
           style={{ display: "flex", flex: 0.9, height: "100%", maxHeight: 400 }}
         >
@@ -76,7 +74,6 @@ const MovieDetailsPage = () => {
               }}
             >
               <Title>{movie?.title}</Title>
-              <DetailsText>{movie?.tagline}</DetailsText>
             </div>
             <div style={{ display: "flex", flexDirection: "row" }}>
               <DetailsText>Language: </DetailsText>
@@ -94,19 +91,21 @@ const MovieDetailsPage = () => {
               </GenreContainer>
               <Details>
                 <CalendarMonthIcon
-                  style={{ color: "white", width: "17", height: "17" }}
+                  style={{ color: "white", width: "20", height: "20" }}
                 />
                 <DetailsText>{movie?.release_date}</DetailsText>
               </Details>
               <Details>
                 <AccessTimeIcon
-                  style={{ color: "white", width: "17", height: "17" }}
+                  style={{ color: "white", width: "20", height: "20" }}
                 />
-                <DetailsText>{hours + ":" + minutes}</DetailsText>
+                <DetailsText>
+                  {hours + "h " + " : " + minutes + "min"}
+                </DetailsText>
               </Details>
               <Details>
                 <StarIcon
-                  style={{ color: "white", width: "17", height: "17" }}
+                  style={{ color: "white", width: "20", height: "20" }}
                 />
                 <DetailsText>{movie?.vote_average?.toFixed(1)}</DetailsText>
               </Details>
@@ -132,7 +131,7 @@ const MovieDetails = styled.div`
   flex-direction: column;
   margin-left: auto;
   margin-right: auto;
-  padding: 20px;
+  padding: 20px 20px 0px;
   overflow-x: hidden;
 `;
 const Video = styled.div`
@@ -161,6 +160,8 @@ const TextContainer = styled.div`
   height: 100%;
   flex-direction: column;
   margin-left: 10px;
+  max-width: 350px;
+  gap: 20px;
 `;
 const Title = styled.h2`
   color: white;
@@ -180,7 +181,8 @@ const GenreContainer = styled.div`
   flex-wrap: wrap;
   flex-direction: row;
   width: 100%;
-  gap: 5px;
+  gap: 10px;
+  max-width: 330px;
 `;
 const Genre = styled.h2`
   display: flex;
@@ -194,9 +196,12 @@ const Genre = styled.h2`
   border-radius: 10px;
   min-width: 80px;
   height: 30px;
+  padding: 5px;
 `;
 const Details = styled.div`
   display: flex;
+  align-items: center;
+  height: 30px;
   flex-direction: row;
   flex-wrap: wrap;
 `;
@@ -218,5 +223,9 @@ const Description = styled.h4`
   font-weight: 400;
   font-size: 16px;
   padding: 5px;
+  width: 330px;
+  max-height: 170px;
+  line-height: 23px;
+  overflow-y: scroll;
 `;
 export default MovieDetailsPage;

@@ -72,7 +72,6 @@ const ContentCard = ({
 const Content = styled.div`
   display: flex;
   position: relative;
-  margin-right: 25px;
   max-width: 196px;
   flex-direction: column;
   transition: transform 450ms;
