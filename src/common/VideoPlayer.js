@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-// Styled video container
-
 const VideoPlayer = ({ movieId, tvShowId, page, episodeNum, seasonNum }) => {
   const videoUrl =
     page === "/TV Shows"
@@ -27,6 +25,7 @@ const VideoContainer = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
+  margin-top: 20px;
 `;
 
 const StyledVideo = styled.iframe`

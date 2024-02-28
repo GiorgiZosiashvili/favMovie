@@ -106,17 +106,17 @@ const Container = styled(Carousel)`
   display: flex;
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 500px;
   border-radius: 30px;
   .react-multiple-carousel__arrow.react-multiple-carousel__arrow--left {
-    left: 20px;
-    min-width: 55px;
-    min-height: 55px;
+    left: 15px;
+    min-width: 50px;
+    min-height: 50px;
   }
   .react-multiple-carousel__arrow.react-multiple-carousel__arrow--right {
-    right: 20px;
-    min-width: 55px;
-    min-height: 55px;
+    right: 15px;
+    min-width: 50px;
+    min-height: 50px;
   }
 `;
 const Fade = styled.div`

@@ -67,7 +67,7 @@ const MoviePage = () => {
     setLoading(true);
     async function fetchData() {
       const request = await instance.get(
-        `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=true&language=en-US&page=${page}&sort_by=popularity.desc&with_genres=${genre}`,
+        `https://api.themoviedb.org/3/discover/movie?include_adult=true&include_video=true&language=en-US&page=${page}&sort_by=popularity.desc&with_genres=${genre}`,
         options
       );
       setMovies(request.data.results);
@@ -90,33 +90,24 @@ const MoviePage = () => {
   return (
     <Movie>
       <Header page="/Movies" />
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
-      >
-        <Body>
-          {movies?.map((movie, i) => {
-            const isFavorite = favoriteMovie.some(
-              (fav) => fav?.id === movie?.id
-            );
-            return (
-              <Card
-                moviePage={true}
-                key={movie?.id}
-                data={movie}
-                isFavorite={isFavorite}
-                addToFavorites={addToFavorites}
-                removeFromFavorites={removeFromFavorites}
-                page="MovieDetails"
-              />
-            );
-          })}
-        </Body>
-      </div>
+
+      <Body>
+        {movies?.map((movie, i) => {
+          const isFavorite = favoriteMovie.some((fav) => fav?.id === movie?.id);
+          return (
+            <Card
+              moviePage={true}
+              key={movie?.id}
+              data={movie}
+              isFavorite={isFavorite}
+              addToFavorites={addToFavorites}
+              removeFromFavorites={removeFromFavorites}
+              page="MovieDetails"
+            />
+          );
+        })}
+      </Body>
+
       <Stack spacing={1}>
         <Pagination
           color="secondary"
@@ -151,7 +142,7 @@ const Body = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   margin: 40px 5% 30px;
-  gap: 30px;
+  gap: 20px;
 `;
 
 export default MoviePage;

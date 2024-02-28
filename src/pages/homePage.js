@@ -7,16 +7,18 @@ import Genres from "../components/homeComp/genres";
 import SignInModal from "../auth/signInModal";
 import { state } from "../valtio/valtio";
 import SignUpModal from "../auth/signUpModal";
-import { useSnapshot } from "valtio";
+
 import Header from "../common/header";
 import Popular from "../components/Popular";
+import { useSnapshot } from "valtio";
 export const API_KEY = `72e82c9ed2b8249e58e63f113a22d374`;
 const HomePage = () => {
   const [genreId, setGenreId] = useState("");
   const [signUpModal, setSignUpModal] = useState(false);
   const [signInModal, setSignInModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  useSnapshot(state);
+  const { user } = useSnapshot(state);
+  console.log("current", user);
 
   return (
     <Home>
@@ -67,7 +69,7 @@ const Body = styled.div`
 const Container = styled.div`
   display: flex;
   width: 100%;
-  margin: 28px 0px;
+  margin: 40px 0px;
 `;
 
 export default HomePage;

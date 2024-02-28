@@ -32,7 +32,7 @@ const Search = () => {
 
     setLoading(true);
     fetch(
-      `https://api.themoviedb.org/3/search/multi?query=${keyword}&include_adult=false&language=en-US&page=1`,
+      `https://api.themoviedb.org/3/search/multi?query=${keyword}&include_adult=true&language=en-US&page=1`,
       options
     )
       .then((response) => response.json())

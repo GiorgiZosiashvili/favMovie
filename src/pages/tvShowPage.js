@@ -140,7 +140,7 @@ const Body = styled.div`
   justify-content: center;
   flex-wrap: wrap;
   margin: 40px 5% 30px;
-  gap: 30px;
+  gap: 20px;
 `;
 
 export default TVShowPage;

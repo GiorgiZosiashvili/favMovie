@@ -3,7 +3,11 @@ import { styled } from "styled-components";
 import Facebook from "../assets/Facebook.png";
 import Google from "../assets/Google.png";
 import CloseIcon from "@mui/icons-material/Close";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { state } from "../valtio/valtio";
 
 const SignInModal = ({ setSignUpModal, setSignInModal }) => {
@@ -15,9 +19,25 @@ const SignInModal = ({ setSignUpModal, setSignInModal }) => {
     { title: "Sign in with Gmail", logo: "Google" },
   ];
 
-  const auth = getAuth();
+  const [currentUser, setCurrentUser] = useState(null);
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user);
+        state.user = user;
+      } else {
+        setCurrentUser(null);
+        state.user = null;
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const signIn = (e) => {
     e.preventDefault();
+    const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;

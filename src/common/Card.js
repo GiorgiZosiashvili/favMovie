@@ -73,12 +73,12 @@ const Content = styled.div`
   position: relative;
   width: 17%;
   min-width: 170px;
-  height: 340px;
+  height: 330px;
   flex-direction: column;
   transition: transform 450ms;
   border-radius: 10px;
   &:hover {
-    transform: scale(1.2);
+    transform: scale(1.15);
     cursor: pointer;
   }
 `;

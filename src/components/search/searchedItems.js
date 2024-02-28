@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 const SearchedItems = ({ data, loading }) => {
   const BASE_URL = "https://image.tmdb.org/t/p/original";
   return data.length === 0 ? null : (
-    <Body style={{ height: data?.length !== 0 ? 250 : 0 }}>
+    <Body key={data.id} style={{ height: data?.length !== 0 ? 250 : 0 }}>
       {data.map((item) => {
         if (loading) {
           return <LoadingAnimation />;

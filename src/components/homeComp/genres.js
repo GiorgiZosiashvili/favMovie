@@ -55,7 +55,8 @@ const Genres = ({ setGenreId }) => {
 
 const Body = styled.div`
   display: flex;
-  width: 30%;
+  width: 35%;
+  max-height: 500px;
   align-items: flex-start;
   flex-direction: column;
   overflow-y: scroll;

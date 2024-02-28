@@ -6,6 +6,7 @@ import YouTube from "react-youtube";
 
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import Play from "../assets/play.png";
 import StarIcon from "@mui/icons-material/Star";
 import Header from "../common/header";
 import VideoPlayer from "../common/VideoPlayer";
@@ -75,6 +76,7 @@ const TVShowDetailsPage = () => {
         ) : (
           <PlayContainer>
             <PlayButton
+              src={Play}
               onClick={() => {
                 setPlay(true);
               }}
@@ -169,19 +171,20 @@ const PlayContainer = styled.div`
   width: 100%;
   align-items: center;
   justify-content: center;
+  margin-top: 20px;
 `;
 const Poster = styled.img`
   width: 100%;
   height: 500px;
   object-fit: cover;
+  opacity: 0.7;
 `;
-const PlayButton = styled.div`
+const PlayButton = styled.img`
   position: absolute;
-  width: 100px;
-  height: 100px;
-  background-color: red;
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
   z-index: 10;
-  border-radius: 50px;
 `;
 const Container = styled.div`
   display: flex;
