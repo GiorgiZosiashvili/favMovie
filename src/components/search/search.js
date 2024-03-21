@@ -67,11 +67,11 @@ const Search = () => {
         <Input
           active={active}
           type="text"
-          placeholder="Search"
+          placeholder="Search..."
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
-        {active && (
+        {keyword.length !== 0 && (
           <CloseIcon
             onClick={(e) => {
               e.stopPropagation(); // Prevent Form onClick from being triggered
@@ -92,8 +92,9 @@ const Body = styled.div`
   flex-direction: column;
   position: relative;
   height: 100%;
-  width: 38%;
-  min-width: 250px;
+  width: 25%;
+  max-width: 300px;
+  min-width: 220px;
 `;
 
 const Form = styled.form`
@@ -109,7 +110,7 @@ const Form = styled.form`
   border-top-right-radius: 20px;
   cursor: pointer;
   width: ${(props) => (props.active ? "100%" : "35px")};
-  transition: width 0.5s ease, visibility 0.5s;
+  transition: width 1.2s ease, visibility 0.5s;
   height: 35px;
 `;
 
@@ -121,7 +122,7 @@ const Input = styled.input`
   position: absolute;
   left: 30px;
   font-size: 16px;
-  transition: width 0.5s ease, visibility 0.5s;
+  transition: width 1s ease, visibility 0.5s;
   &::placeholder {
     color: gray;
     font-size: 14px;
@@ -137,7 +138,7 @@ const CloseIcon = styled(CancelIcon)`
   cursor: pointer;
   position: absolute;
   right: 10px;
-  transition: width 0.2s ease, visibility 0.2s;
+  transition: width 0.5s ease, visibility 0.2s;
 `;
 
 export default Search;

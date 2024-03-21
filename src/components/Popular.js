@@ -30,27 +30,32 @@ const Popular = () => {
 
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  function truncate(source, size) {
+    return source?.length > size ? source?.slice(0, size - 1) + "…" : source;
+  }
   useEffect(() => {
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MmU4MmM5ZWQyYjgyNDllNThlNjNmMTEzYTIyZDM3NCIsInN1YiI6IjYzMGRkZTgyYWUzODQzMDA4MWIxZWUxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.39HzIR-bviX8W-YLbuvJGBxbg4DyMgChMlEKt-Hc9mc",
-      },
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const options = {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MmU4MmM5ZWQyYjgyNDllNThlNjNmMTEzYTIyZDM3NCIsInN1YiI6IjYzMGRkZTgyYWUzODQzMDA4MWIxZWUxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.39HzIR-bviX8W-YLbuvJGBxbg4DyMgChMlEKt-Hc9mc",
+          },
+        };
+        const request = await instance.get(
+          `https://api.themoviedb.org/3/movie/popular?language=en-US&page=1`,
+          options
+        );
+        setMovies(request?.data?.results);
+      } catch (error) {
+        console.error("Error fetching popular movies:", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    setLoading(true);
-    async function fetchData() {
-      const request = await instance.get(
-        `https://api.themoviedb.org/3/movie/popular?language=en-US&page=1`,
-        options
-      );
-      setMovies(request?.data?.results);
-      setLoading(false);
-      return request;
-    }
-
     fetchData();
   }, []);
   if (loading) {
@@ -66,34 +71,36 @@ const Popular = () => {
     >
       {movies.map((movie) => {
         return (
-          <Movie>
-            <Fade />
-            <MovieImage
-              effect="blur"
-              width={"100%"}
-              height={"100%"}
-              alt={
-                movie?.title ||
-                movie?.original_title ||
-                movie?.name ||
-                movie?.original_name
-              }
-              src={
-                movie?.poster_path
-                  ? `${BASE_URL}${movie?.backdrop_path}`
-                  : `${BASE_URL}${movie?.poster_path}`
-                  ? "https://static.thenounproject.com/png/4974686-200.png"
-                  : null
-              }
-            />
+          <Movie key={movie.id}>
+            <MovieImage>
+              <LazyLoadImage
+                effect="blur"
+                width={"100%"}
+                height={"500px"}
+                alt={
+                  movie?.poster_path
+                    ? `${BASE_URL}${movie?.poster_path}`
+                    : `${BASE_URL}${movie?.backdrop_path}`
+                    ? "https://static.thenounproject.com/png/4974686-200.png"
+                    : null
+                }
+                src={
+                  movie?.poster_path
+                    ? `${BASE_URL}${movie?.backdrop_path}`
+                    : `${BASE_URL}${movie?.poster_path}`
+                    ? "https://static.thenounproject.com/png/4974686-200.png"
+                    : null
+                }
+              />
+            </MovieImage>
             <Description>
-              <Movie_Title>{movie.title}</Movie_Title>
+              <Movie_Title>{truncate(movie.title, 20)} </Movie_Title>
               <GenreContainer>
                 {movie?.genre_ids?.map((genre) => {
                   return <Genre key={genre}>{genre}</Genre>;
                 })}
               </GenreContainer>
-              <Overview>{movie.overview}</Overview>
+              <Overview> {truncate(movie.overview, 300)} </Overview>
               <Button to={`MovieDetails/${movie?.id}`}>Watch Movie</Button>
             </Description>
           </Movie>
@@ -105,9 +112,14 @@ const Popular = () => {
 const Container = styled(Carousel)`
   display: flex;
   position: relative;
-  width: 100%;
+  min-width: 100%;
+  min-width: 300px;
   height: 500px;
   border-radius: 30px;
+  @media (max-width: 1005px) {
+    max-height: 500px;
+  }
+
   .react-multiple-carousel__arrow.react-multiple-carousel__arrow--left {
     left: 15px;
     min-width: 50px;
@@ -119,40 +131,37 @@ const Container = styled(Carousel)`
     min-height: 50px;
   }
 `;
-const Fade = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: 1;
-`;
 const Movie = styled.div`
   display: flex;
+  position: relative;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
+  min-width: 100%;
+  height: 100%;
+  background-color: bl;
 `;
 const Description = styled.div`
-  position: absolute;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
   justify-content: center;
-  width: 100%;
   height: 100%;
+  min-height: 500px;
+  flex-direction: column;
   gap: 15px;
-  padding-left: 8%;
-  z-index: 2;
+  z-index: 5;
+  margin-left: 70px;
 `;
 
 const Movie_Title = styled.h3`
   color: white;
   font-size: 40px;
+  max-width: 300px;
 `;
 const GenreContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   gap: 5px;
+  width: 250px;
 `;
 const Genre = styled.h2`
   display: flex;
@@ -169,7 +178,7 @@ const Genre = styled.h2`
 `;
 const Overview = styled.div`
   color: rgba(255, 255, 255, 0.9);
-  width: 350px;
+  max-width: 280px;
   line-height: 20px;
 `;
 const Button = styled(Link)`
@@ -177,13 +186,17 @@ const Button = styled(Link)`
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  width: 15%;
-  height: 7%;
+  padding: 10px;
+  max-width: 150px;
   font-size: 18px;
   color: white;
   background-color: #261a37;
 `;
-const MovieImage = styled(LazyLoadImage)`
+const MovieImage = styled.div`
   object-fit: cover;
+  position: absolute;
+  min-width: 100%;
+  min-height: 500px;
+  opacity: 0.75;
 `;
 export default Popular;

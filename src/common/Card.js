@@ -29,7 +29,7 @@ const Card = ({
     <Content key={data?.id}>
       {moviePage || TVShowPage ? (
         <Favorite onClick={handleFavoriteClick}>
-          <FavoriteIcon style={{ color: isFavorite ? "red" : "#fff" }} />
+          <StyledFavoriteIcon isFavorite={isFavorite} />
         </Favorite>
       ) : null}
       <Link
@@ -71,9 +71,10 @@ const Card = ({
 const Content = styled.div`
   display: flex;
   position: relative;
+  flex-direction: row;
   width: 17%;
-  min-width: 170px;
-  height: 330px;
+  min-width: 220px;
+  max-width: 250px;
   flex-direction: column;
   transition: transform 450ms;
   border-radius: 10px;
@@ -88,7 +89,7 @@ const Favorite = styled.div`
   position: absolute;
   right: 5px;
   top: 5px;
-  z-index: 100;
+  z-index: 10;
   background-color: rgba(255, 255, 255, 0.25);
   width: 34px;
   height: 34px;
@@ -97,11 +98,18 @@ const Favorite = styled.div`
   align-items: center;
   justify-content: center;
 `;
-
+const StyledFavoriteIcon = styled(FavoriteIcon)`
+  color: ${(props) => (props.isFavorite ? "red" : "#fff")};
+  transition: color 0.5s ease;
+  &:hover {
+    color: red;
+    transition: all 1s ease;
+  }
+`;
 const MovieImage = styled(LazyLoadImage)`
   transition: border-color 450ms;
   min-height: 255px;
-  height: 280px;
+  height: 300px;
   border-radius: 10px;
   ${Content}:hover & {
     border: solid 2px #4200ff;

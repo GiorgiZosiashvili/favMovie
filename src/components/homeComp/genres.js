@@ -55,12 +55,18 @@ const Genres = ({ setGenreId }) => {
 
 const Body = styled.div`
   display: flex;
-  width: 35%;
-  max-height: 500px;
+  width: 29%;
+  height: 500px;
+  min-width: 280px;
   align-items: flex-start;
   flex-direction: column;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  @media (max-width: 750px) {
+    min-width: 140px;
+  }
+  @media (max-width: 550px) {
+    width: 100%;
+    margin-bottom: 20px;
+  }
   ::-webkit-scrollbar {
     width: 0px;
     height: 0px;
@@ -69,10 +75,12 @@ const Body = styled.div`
 
 const MovieGenres = styled.ul`
   display: flex;
+  height: 100%;
   align-items: center;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 8px;
   flex-wrap: wrap;
+  overflow-y: scroll;
   ::-webkit-scrollbar {
     width: 0;
   }

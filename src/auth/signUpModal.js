@@ -46,7 +46,6 @@ const SignUpModal = ({ setSignUpModal, setSignInModal }) => {
           <CloseButton
             onClick={() => {
               setSignUpModal(false);
-              setSignInModal(true);
             }}
           >
             <CloseIcon sx={{ fontSize: 24, color: "white" }} />

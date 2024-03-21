@@ -7,6 +7,7 @@ import instance from "../axios";
 import { Pagination, Stack } from "@mui/material";
 import Header from "../common/header";
 import Card from "../common/Card";
+import FilterTVShow from "../components/TVShowComp/FilterTVShow";
 
 const TVShowPage = () => {
   useSnapshot(state, FavTVShow);
@@ -89,6 +90,7 @@ const TVShowPage = () => {
   return (
     <TVShow>
       <Header page="/TV Shows" />
+      <FilterTVShow />
       <Body>
         {tvShow.map((tvShow) => {
           const isFavorite = favoriteTvShow.some((fav) => fav.id === tvShow.id);
@@ -131,16 +133,16 @@ const TVShow = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 40px;
+  padding: 20px 2%;
 `;
 const Body = styled.div`
   display: flex;
-  width: 90%;
+  width: 100%;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin: 40px 5% 30px;
-  gap: 20px;
+  padding: 30px 0px;
+  gap: 25px;
 `;
 
 export default TVShowPage;

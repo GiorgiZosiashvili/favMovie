@@ -7,6 +7,7 @@ import AnimationsPage from "../pages/animationsPage";
 import MovieDetailsPage from "../pages/movieDetailsPage";
 import FavoriteMoviesPage from "../pages/favoritesPage";
 import TVShowDetailsPage from "../pages/TVShowDetailsPage";
+import Authorization from "../pages/Authorization";
 
 export default function Router() {
   return (
@@ -19,6 +20,7 @@ export default function Router() {
         <Route path="MovieDetails/:id" element={<MovieDetailsPage />} />
         <Route path="TVshowDetails/:id" element={<TVShowDetailsPage />} />
         <Route path="FavoriteMovies" element={<FavoriteMoviesPage />} />
+        <Route path="Authorization" element={<Authorization />} />
       </Routes>
     </BrowserRouter>
   );

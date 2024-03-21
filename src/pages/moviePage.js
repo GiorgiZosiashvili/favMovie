@@ -10,6 +10,7 @@ import { useSnapshot } from "valtio";
 
 import Header from "../common/header";
 import Card from "../common/Card";
+import MovieFiler from "../components/MovieComp/MovieFiler";
 
 const MoviePage = () => {
   useSnapshot(state, FavMovie);
@@ -18,10 +19,21 @@ const MoviePage = () => {
     const savedPage = parseInt(localStorage.getItem("page"));
     return isNaN(savedPage) ? 1 : savedPage;
   });
-  const [genre, setGenre] = useState("");
   const [loading, setLoading] = useState(false);
   const [favoriteMovie, setFavoriteMovie] = useState([]);
-
+  const [genre, setGenre] = useState(() => {
+    const savedGenre = parseInt(localStorage.getItem("genre"));
+    return isNaN(savedGenre) ? "" : savedGenre;
+  });
+  const [year, setYear] = useState(() => {
+    const savedYear = parseInt(localStorage.getItem("year"));
+    return isNaN(savedYear) ? "" : savedYear;
+  });
+  const [rating, setRating] = useState(() => {
+    const savedRating = parseInt(localStorage.getItem("rating"));
+    return isNaN(savedRating) ? "" : savedRating;
+  });
+  const [pagesCount, setPagesCount] = useState(null);
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -67,63 +79,79 @@ const MoviePage = () => {
     setLoading(true);
     async function fetchData() {
       const request = await instance.get(
-        `https://api.themoviedb.org/3/discover/movie?include_adult=true&include_video=true&language=en-US&page=${page}&sort_by=popularity.desc&with_genres=${genre}`,
+        `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&primary_release_year=${year}&sort_by=popularity.desc&vote_average.gte=${rating}&with_genres=${genre}`,
         options
       );
       setMovies(request.data.results);
       setLoading(false);
-      return request;
+      setPagesCount(request.data.total_pages);
     }
 
     fetchData();
-  }, [genre, page]);
+  }, [genre, page, year, rating]);
 
   const handleChange = (event, value) => {
-    setPage(value);
-    localStorage.setItem("page", value);
+    const limitedPage = Math.min(value, 500); // Limit the page to maximum 500
+    setPage(limitedPage);
+    localStorage.setItem("page", limitedPage);
   };
-
-  if (loading) {
-    return <LoadingAnimation />;
-  }
+  useEffect(() => {
+    localStorage.setItem("genre", genre);
+    localStorage.setItem("year", year);
+    localStorage.setItem("rating", rating);
+  }, [genre, year, rating]);
 
   return (
     <Movie>
       <Header page="/Movies" />
-
+      <MovieFiler
+        year={year}
+        genre={genre}
+        rating={rating}
+        setGenre={setGenre}
+        setYear={setYear}
+        setRating={setRating}
+      />
       <Body>
-        {movies?.map((movie, i) => {
-          const isFavorite = favoriteMovie.some((fav) => fav?.id === movie?.id);
-          return (
-            <Card
-              moviePage={true}
-              key={movie?.id}
-              data={movie}
-              isFavorite={isFavorite}
-              addToFavorites={addToFavorites}
-              removeFromFavorites={removeFromFavorites}
-              page="MovieDetails"
-            />
-          );
-        })}
+        {loading ? (
+          <LoadingAnimation />
+        ) : (
+          movies?.map((movie, i) => {
+            const isFavorite = favoriteMovie.some(
+              (fav) => fav?.id === movie?.id
+            );
+            return (
+              <Card
+                moviePage={true}
+                key={movie?.id}
+                data={movie}
+                isFavorite={isFavorite}
+                addToFavorites={addToFavorites}
+                removeFromFavorites={removeFromFavorites}
+                page="MovieDetails"
+              />
+            );
+          })
+        )}
       </Body>
-
-      <Stack spacing={1}>
-        <Pagination
-          color="secondary"
-          count={500}
-          defaultPage={1}
-          boundaryCount={2}
-          siblingCount={1}
-          page={page}
-          onChange={handleChange}
-          sx={{
-            "& .MuiPaginationItem-root": {
-              color: "white",
-            },
-          }}
-        />
-      </Stack>
+      {!loading && (
+        <Stack spacing={1}>
+          <Pagination
+            color="secondary"
+            count={Math.min(pagesCount, 500)}
+            defaultPage={1}
+            boundaryCount={2}
+            siblingCount={1}
+            page={page}
+            onChange={handleChange}
+            sx={{
+              "& .MuiPaginationItem-root": {
+                color: "white",
+              },
+            }}
+          />
+        </Stack>
+      )}
     </Movie>
   );
 };
@@ -133,16 +161,16 @@ const Movie = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 40px;
+  padding: 20px 2%;
 `;
 const Body = styled.div`
   display: flex;
-  width: 90%;
+  width: 100%;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  margin: 40px 5% 30px;
-  gap: 20px;
+  padding: 30px 0px;
+  gap: 25px;
 `;
 
 export default MoviePage;

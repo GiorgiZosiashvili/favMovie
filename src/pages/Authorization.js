@@ -3,22 +3,24 @@ import { styled } from "styled-components";
 import Facebook from "../assets/Facebook.png";
 import Google from "../assets/Google.png";
 import CloseIcon from "@mui/icons-material/Close";
+import Success from "../assets/success.png";
 import {
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { state } from "../valtio/valtio";
+import { Link } from "react-router-dom";
+import SignUpModal from "../auth/signUpModal";
 
-const SignInModal = ({ setSignUpModal, setSignInModal }) => {
+const Authorization = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [signUpModal, setSignUpModal] = useState(false);
   const signInOption = [
     { title: "Sign in with Facebook", logo: "Facebook" },
     { title: "Sign in with Gmail", logo: "Google" },
   ];
-
   const [currentUser, setCurrentUser] = useState(null);
   useEffect(() => {
     const auth = getAuth();
@@ -41,14 +43,17 @@ const SignInModal = ({ setSignUpModal, setSignInModal }) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        localStorage.setItem("user", JSON.stringify(user));
-        setSignInModal(false);
-        state.currentUser = user;
+        setCurrentUser(user);
       })
       .catch((error) => {
         console.log("error", error);
       });
   };
+  useEffect(() => {
+    state.user = currentUser;
+    localStorage.setItem("user", JSON.stringify(currentUser));
+    console.log(localStorage.getItem("user"));
+  }, [currentUser]);
 
   return (
     <Body>
@@ -56,81 +61,96 @@ const SignInModal = ({ setSignUpModal, setSignInModal }) => {
         <HeaderContainer>
           <Ghost />
           <Title>Authorization</Title>
-          <CloseButton
-            onClick={() => {
-              setSignInModal(false);
-            }}
-          >
+          <CloseButton to={"/"}>
             <CloseIcon sx={{ fontSize: 24, color: "white" }} />
           </CloseButton>
         </HeaderContainer>
-        {signInOption.map((option, i) => {
-          return (
-            <SignInOption key={i}>
-              <Logo src={option.logo === "Facebook" ? Facebook : Google} />
-              <SignInOptionTitle>{option.title}</SignInOptionTitle>
-              <Ghost />
-            </SignInOption>
-          );
-        })}
-        <Divider>
-          <Line />
-          <Or>Or</Or>
-          <Line />
-        </Divider>
-        <InputContainer onSubmit={signIn}>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-          />
-          <Input
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Forgot>forgot password?</Forgot>
-          <LoginButton>Log in</LoginButton>
-        </InputContainer>
-        <NoAccountContainer>
-          <NoAccount>Don’t have an account?</NoAccount>
-          <SignUp
-            onClick={() => {
-              setSignUpModal(true);
-              setSignInModal(false);
-            }}
-          >
-            Sign Up
-          </SignUp>
-        </NoAccountContainer>
+        {currentUser !== null ? (
+          <SuccessContainer>
+            <SuccessIcon src={Success} />
+            <DisplayName> Welcome {currentUser.displayName}</DisplayName>
+          </SuccessContainer>
+        ) : (
+          <>
+            {signInOption.map((option, i) => {
+              return (
+                <SignInOption key={i}>
+                  <Logo src={option.logo === "Facebook" ? Facebook : Google} />
+                  <SignInOptionTitle>{option.title}</SignInOptionTitle>
+                  <Ghost />
+                </SignInOption>
+              );
+            })}
+            <Divider>
+              <Line />
+              <Or>Or</Or>
+              <Line />
+            </Divider>
+            <InputContainer onSubmit={signIn}>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+              />
+              <Input
+                placeholder="Password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Forgot>forgot password?</Forgot>
+              <LoginButton>Log in</LoginButton>
+            </InputContainer>
+            <NoAccountContainer>
+              <NoAccount>Don’t have an account?</NoAccount>
+              <SignUp
+                onClick={() => {
+                  setSignUpModal(true);
+                }}
+              >
+                Sign Up
+              </SignUp>
+              {signUpModal && <SignUpModal setSignUpModal={setSignUpModal} />}
+            </NoAccountContainer>
+          </>
+        )}
       </Content>
     </Body>
   );
 };
 const Body = styled.div`
-  width: 100%;
+  min-width: 100%;
   min-height: 100%;
   position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 200;
 `;
 const Content = styled.div`
+  display: flex;
   padding: 0px 25px;
   background-color: rgba(39, 27, 74, 1);
-  width: 22%;
-  min-width: 350px;
+  width: 30%;
+  min-width: 345px;
   margin-top: 62px;
   display: flex;
   flex-direction: column;
   border: none;
   border-radius: 10px;
+  min-height: 625px;
+`;
+const SuccessContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+`;
+const SuccessIcon = styled.img`
+  width: 90%;
+  object-fit: cover;
 `;
 const HeaderContainer = styled.div`
   display: flex;
@@ -139,11 +159,14 @@ const HeaderContainer = styled.div`
   flex-direction: row;
   margin: 46px 0px 32px;
 `;
+const DisplayName = styled.h3`
+  font-size: 24px;
+`;
 const Title = styled.h1`
   color: white;
   font-size: 20px;
 `;
-const CloseButton = styled.button`
+const CloseButton = styled(Link)`
   border: none;
   background: none;
   cursor: pointer;
@@ -226,4 +249,4 @@ const SignUp = styled.h6`
   text-align: right;
   cursor: pointer;
 `;
-export default SignInModal;
+export default Authorization;
