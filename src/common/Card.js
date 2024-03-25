@@ -4,6 +4,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { state } from "../valtio/valtio";
 const Card = ({
   data,
   addToFavorites,
@@ -12,6 +13,7 @@ const Card = ({
   moviePage,
   TVShowPage,
   page,
+  type,
 }) => {
   const BASE_URL = "https://image.tmdb.org/t/p/original";
   function truncate(source, size) {
@@ -25,9 +27,10 @@ const Card = ({
       addToFavorites(data);
     }
   };
+
   return (
     <Content key={data?.id}>
-      {moviePage || TVShowPage ? (
+      {state?.user?.uid && type !== "Favorite" ? (
         <Favorite onClick={handleFavoriteClick}>
           <StyledFavoriteIcon isFavorite={isFavorite} />
         </Favorite>

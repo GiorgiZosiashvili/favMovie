@@ -4,7 +4,6 @@ import { styled } from "styled-components";
 const Dropdown = ({ data, setValue, title, value, type, activeField }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState(null);
-  console.log("val", value);
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };

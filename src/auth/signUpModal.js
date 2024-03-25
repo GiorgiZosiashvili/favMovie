@@ -12,7 +12,6 @@ const SignUpModal = ({ setSignUpModal, setSignInModal }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const auth = getAuth();
-  console.log(auth);
   const signUp = (e) => {
     e.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
@@ -24,7 +23,6 @@ const SignUpModal = ({ setSignUpModal, setSignInModal }) => {
           .then(() => {
             console.log("User display name updated successfully.");
             setSignUpModal(false);
-            setSignInModal(false);
           })
           .catch((error) => {
             console.log("Error updating user display name:", error);

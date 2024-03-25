@@ -4,57 +4,44 @@ import Facebook from "../assets/Facebook.png";
 import Google from "../assets/Google.png";
 import CloseIcon from "@mui/icons-material/Close";
 import Success from "../assets/success.png";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { state } from "../valtio/valtio";
 import { Link } from "react-router-dom";
 import SignUpModal from "../auth/signUpModal";
+import { useSnapshot } from "valtio";
 
 const Authorization = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("zoskagio@gmail.com");
+  const [password, setPassword] = useState("zoskagio123");
   const [signUpModal, setSignUpModal] = useState(false);
+
+  const store = useSnapshot(state);
   const signInOption = [
     { title: "Sign in with Facebook", logo: "Facebook" },
     { title: "Sign in with Gmail", logo: "Google" },
   ];
-  const [currentUser, setCurrentUser] = useState(null);
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user);
-        state.user = user;
-      } else {
-        setCurrentUser(null);
-        state.user = null;
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const signIn = (e) => {
     e.preventDefault();
+
     const auth = getAuth();
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        setCurrentUser(user);
+        localStorage.setItem("token", user.accessToken);
+        localStorage.setItem("user", user);
       })
       .catch((error) => {
         console.log("error", error);
       });
   };
   useEffect(() => {
-    state.user = currentUser;
-    localStorage.setItem("user", JSON.stringify(currentUser));
-    console.log(localStorage.getItem("user"));
-  }, [currentUser]);
-
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      store.user = savedUser;
+    }
+  }, [store]);
   return (
     <Body>
       <Content>
@@ -65,10 +52,10 @@ const Authorization = () => {
             <CloseIcon sx={{ fontSize: 24, color: "white" }} />
           </CloseButton>
         </HeaderContainer>
-        {currentUser !== null ? (
+        {store.user ? (
           <SuccessContainer>
             <SuccessIcon src={Success} />
-            <DisplayName> Welcome {currentUser.displayName}</DisplayName>
+            <DisplayName> Welcome {store.user.displayName}</DisplayName>
           </SuccessContainer>
         ) : (
           <>
@@ -149,8 +136,14 @@ const SuccessContainer = styled.div`
   justify-content: center;
 `;
 const SuccessIcon = styled.img`
-  width: 90%;
+  width: 80%;
   object-fit: cover;
+`;
+const DisplayName = styled.h3`
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+  color: white;
 `;
 const HeaderContainer = styled.div`
   display: flex;
@@ -159,9 +152,7 @@ const HeaderContainer = styled.div`
   flex-direction: row;
   margin: 46px 0px 32px;
 `;
-const DisplayName = styled.h3`
-  font-size: 24px;
-`;
+
 const Title = styled.h1`
   color: white;
   font-size: 20px;

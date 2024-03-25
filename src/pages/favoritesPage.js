@@ -9,64 +9,63 @@ const FavoriteMoviesPage = () => {
   const [favoriteMovie, setFavoriteMovie] = useState([]);
   const [favoriteTvShow, setFavoriteTvShow] = useState([]);
 
-  useSnapshot(state, FavMovie, FavTVShow);
+  const store = useSnapshot(state, FavMovie, FavTVShow);
   FavMovie.favMovie = favoriteMovie;
   FavTVShow.favTvShow = favoriteTvShow;
-
-  const uid = state?.user?.uid;
-
-  console.log(state.user);
+  const userUid = store?.user?.uid;
   useEffect(() => {
-    const storedFavoriteMovie = localStorage.getItem(`favoriteMovie+${uid}`);
+    const storedFavoriteMovie = localStorage.getItem(`favoriteMovie${userUid}`);
+
     if (storedFavoriteMovie) {
       setFavoriteMovie(JSON.parse(storedFavoriteMovie));
       FavMovie.favMovie = JSON.parse(storedFavoriteMovie);
     }
-  }, [uid]);
-
-  useEffect(() => {
-    const storedFavoriteTvShow = localStorage.getItem(`favoriteTvShow+${uid}`);
+    const storedFavoriteTvShow = localStorage.getItem(
+      `favoriteTvShow${userUid}`
+    );
     if (storedFavoriteTvShow) {
       setFavoriteTvShow(JSON.parse(storedFavoriteTvShow));
       FavTVShow.favTvShow = JSON.parse(storedFavoriteTvShow);
     }
-  }, [uid]);
-
+  }, [userUid]);
+  console.log(userUid);
   return (
     <Container>
       <Header page="/FavoriteMovies" />
-      <Title>Favorite Movies</Title>
-      <Body>
-        {favoriteMovie?.map((favorite) => {
-          const isFavorite = favoriteMovie.some(
-            (fav) => fav?.id === favorite?.id
-          );
-          return (
-            <Card
-              key={favorite?.id}
-              isFavorite={isFavorite}
-              data={favorite}
-              page="MovieDetails"
-            />
-          );
-        })}
-      </Body>
-      <Title>Favorite TV Shows</Title>
-      <Body>
-        {favoriteTvShow?.map((favorite) => {
-          const isFavorite = favoriteMovie.some(
-            (fav) => fav?.id === favorite?.id
-          );
-          return (
-            <Card
-              key={favorite?.id}
-              isFavorite={isFavorite}
-              data={favorite}
-              page="TVshowDetails"
-            />
-          );
-        })}
-      </Body>
+      {favoriteMovie.length !== 0 ? (
+        <>
+          <Title>Favorite Movies</Title>
+          <Body>
+            {favoriteMovie?.map((favorite) => {
+              return (
+                <Card
+                  key={favorite?.id}
+                  data={favorite}
+                  page="MovieDetails"
+                  type="Favorite"
+                />
+              );
+            })}
+          </Body>
+        </>
+      ) : null}
+      {favoriteTvShow.length !== 0 ? (
+        <>
+          <Title>Favorite TV Shows</Title>
+          <Body>
+            {favoriteTvShow?.map((favorite) => {
+              return (
+                <Card
+                  key={favorite?.id}
+                  data={favorite}
+                  page="TVshowDetails"
+                  type="Favorite"
+                />
+              );
+            })}
+          </Body>
+        </>
+      ) : null}
     </Container>
   );
 };
@@ -79,12 +78,12 @@ const Container = styled.div`
 `;
 const Body = styled.div`
   display: flex;
-  width: 100%;
+  width: 98%;
+  margin: 0% 1%;
   align-items: center;
   justify-content: left;
   flex-wrap: wrap;
   gap: 20px;
-  padding: 20px 5% 0px 10%;
 `;
 const Title = styled.h3`
   font-size: 24px;

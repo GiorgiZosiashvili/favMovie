@@ -13,9 +13,6 @@ import { state } from "../valtio/valtio";
 export const API_KEY = `72e82c9ed2b8249e58e63f113a22d374`;
 const HomePage = () => {
   const [genreId, setGenreId] = useState("");
-
-  useSnapshot(state);
-  console.log(state.user);
   return (
     <Home>
       <Header page="/" />

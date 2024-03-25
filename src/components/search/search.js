@@ -94,7 +94,6 @@ const Body = styled.div`
   height: 100%;
   width: 25%;
   max-width: 300px;
-  min-width: 220px;
 `;
 
 const Form = styled.form`

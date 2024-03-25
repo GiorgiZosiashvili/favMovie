@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import Search from "../components/search/search";
 import Logo from "../assets/logo.png";
@@ -10,11 +10,6 @@ import { state } from "../valtio/valtio";
 function Header({ page }) {
   const [currentPage, setCurrentPage] = useState("Home");
   useSnapshot(state);
-  const [loggedIn, setLoggedIn] = useState(false);
-  useEffect(() => {
-    state.user !== null && setLoggedIn(true);
-  }, [state.user]);
-
   const pages = [
     {
       name: "Home",
@@ -57,24 +52,19 @@ function Header({ page }) {
         currentPage={currentPage}
         pages={pages}
         handleLogout={handleLogout}
-        setLoggedIn={setLoggedIn}
-        loggedIn={loggedIn}
+        loggedIn={state.user}
       />
     </Container>
   );
 }
-const BurgerMenu = ({
-  currentPage,
-  pages,
-  handleLogout,
-  setLoggedIn,
-  loggedIn,
-}) => {
+const BurgerMenu = ({ currentPage, pages, handleLogout, loggedIn }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+  const navigate = useNavigate();
+
   return (
     <Menu>
       <BurgerButton onClick={toggleMenu}>
@@ -97,14 +87,17 @@ const BurgerMenu = ({
             <LogOut
               onClick={() => {
                 handleLogout();
-                setLoggedIn(false);
+                state.user = null;
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                navigate("/");
               }}
             >
               Log Out
             </LogOut>
           </>
         ) : (
-          <Login to={"Authorization"}>Log In</Login>
+          <Login to={"/Authorization"}>Log In</Login>
         )}
       </MenuContainer>
     </Menu>

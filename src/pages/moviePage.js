@@ -13,7 +13,7 @@ import Card from "../common/Card";
 import MovieFiler from "../components/MovieComp/MovieFiler";
 
 const MoviePage = () => {
-  useSnapshot(state, FavMovie);
+  const store = useSnapshot(state, FavMovie);
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(() => {
     const savedPage = parseInt(localStorage.getItem("page"));
@@ -34,38 +34,34 @@ const MoviePage = () => {
     return isNaN(savedRating) ? "" : savedRating;
   });
   const [pagesCount, setPagesCount] = useState(null);
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      state.currentUser = JSON.parse(savedUser);
-    }
-  }, []);
 
+  const userUid = store?.user?.uid;
   FavMovie.favMovie = favoriteMovie;
 
-  const uid = state?.currentUser?.uid;
+  console.log("store", store.user);
+
   const addToFavorites = (movie) => {
     localStorage.setItem(
-      `favoriteMovie+${uid}`,
+      `favoriteMovie${userUid}`,
       JSON.stringify([...favoriteMovie, movie])
     );
     setFavoriteMovie([...favoriteMovie, movie]);
   };
-
   const removeFromFavorites = (movie) => {
     setFavoriteMovie(favoriteMovie.filter((fav) => fav.id !== movie.id));
     localStorage.setItem(
-      `favoriteMovie+${uid}`,
+      `favoriteMovie${userUid}`,
       JSON.stringify(favoriteMovie.filter((fav) => fav.id !== movie.id))
     );
   };
+
   useEffect(() => {
-    const storedFavoriteMovie = localStorage.getItem(`favoriteMovie+${uid}`);
+    const storedFavoriteMovie = localStorage.getItem(`favoriteMovie${userUid}`);
     if (storedFavoriteMovie) {
       setFavoriteMovie(JSON.parse(storedFavoriteMovie));
       FavMovie.favMovie = JSON.parse(storedFavoriteMovie);
     }
-  }, [uid]);
+  }, [userUid]);
 
   useEffect(() => {
     const options = {

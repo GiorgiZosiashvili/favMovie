@@ -21,20 +21,12 @@ const TVShowPage = () => {
   const [favoriteTvShow, setFavoriteTvShow] = useState([]);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      state.currentUser = JSON.parse(savedUser);
-    }
-  }, []);
-
-  useEffect(() => {
     localStorage.setItem("tvShowPage", page);
   }, [page]);
 
-  const uid = state?.currentUser?.uid;
   const addToFavorites = (tvShow) => {
     localStorage.setItem(
-      `favoriteTvShow+${uid}`,
+      `favoriteTvShow`,
       JSON.stringify([...favoriteTvShow, tvShow])
     );
     setFavoriteTvShow([...favoriteTvShow, tvShow]);
@@ -43,18 +35,18 @@ const TVShowPage = () => {
   const removeFromFavorites = (tvShow) => {
     setFavoriteTvShow(favoriteTvShow.filter((fav) => fav.id !== tvShow.id));
     localStorage.setItem(
-      `favoriteTvShow+${uid}`,
+      `favoriteTvShow`,
       JSON.stringify(favoriteTvShow.filter((fav) => fav.id !== tvShow.id))
     );
   };
 
   useEffect(() => {
-    const storedFavoriteTvShow = localStorage.getItem(`favoriteTvShow+${uid}`);
+    const storedFavoriteTvShow = localStorage.getItem(`favoriteTvShow`);
     if (storedFavoriteTvShow) {
       setFavoriteTvShow(JSON.parse(storedFavoriteTvShow));
       FavTVShow.favTvShow = JSON.parse(storedFavoriteTvShow);
     }
-  }, [uid]);
+  }, []);
 
   useEffect(() => {
     const options = {

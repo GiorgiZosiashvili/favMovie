@@ -8,8 +8,24 @@ import MovieDetailsPage from "../pages/movieDetailsPage";
 import FavoriteMoviesPage from "../pages/favoritesPage";
 import TVShowDetailsPage from "../pages/TVShowDetailsPage";
 import Authorization from "../pages/Authorization";
+import { state } from "../valtio/valtio";
+import { getAuth, onAuthStateChanged } from "@firebase/auth";
+import { useEffect } from "react";
 
 export default function Router() {
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        state.user = user;
+      } else {
+        state.user = null;
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
